@@ -9,6 +9,7 @@ var usersRouter = require('./routes/users');
 var helloRouter = require('./routes/hello');
 var notesRouter = require('./routes/notes');
 
+// ★ここで app を作る
 var app = express();
 
 // view engine setup
@@ -42,4 +43,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+// ★最後はこれだけ
 module.exports = app;

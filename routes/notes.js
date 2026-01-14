@@ -1,32 +1,53 @@
 var express = require('express');
 var router = express.Router();
 
-// レスポンスのデータ（ノート全件）
-const responseObjectDataAll = {
-textObject1 : {
-id: 1,
-title: 'ノート１のタイトルです',
-subTitle: 'ノート１のサブタイトルです',
-bodyText: 'ノート１の本文です'
-},
-textObject2 : {
-id: 2,
-title: 'ノート２のタイトルです',
-subTitle: 'ノート２のサブタイトルです',
-bodyText: 'ノート２の本文です'
-},
-};
+const { MongoClient } = require('mongodb');
+
+// ★ あなたのAtlasの接続文字列に書き換えてね！
+const uri = "wwwwwwwwwwwwww";
+const client = new MongoClient(uri);
+
+// 必要なときだけ接続する関数
+async function connectClient() {
+  if (!client.topology || !client.topology.isConnected()) {
+    await client.connect();
+    console.log('MongoDB connected');
+  }
+}
 
 /**
-* メモを全件取得するAPI
-* @returns {Object[]} data
-* @returns {number} data.id - ID
-* @returns {string} data.title - タイトル
-* @returns {string} data.text - 内容
-*/
-router.get('/', function (req, res, next) {
-// 全件取得して返す
-res.json(responseObjectDataAll);
-})
+ * GET /notes
+ */
+router.get('/', async (req, res) => {
+  try {
+    console.log('GET /notes called');
+
+    await connectClient();
+
+    // DB名 notes に変更（testじゃない！）
+const database = client.db('notes');        // ← ここを 'notes' にする
+const notes = database.collection('notes');
+
+// id=1 のデータを取得
+const query = { id: 1 };                   // ← ここを { id: 1 } にする
+const note = await notes.findOne(query);
+console.log('note ->', note);
+
+if (!note) {
+  return res.status(404).json({ error: 'Note not found' });
+}
+
+res.json(note);
+
+   
+  } catch (error) {
+    console.error('ERROR in /notes:', error);
+    res.status(500).json({
+      message: 'Server error',
+      errorName: error.name,
+      errorMessage: error.message,
+    });
+  }
+});
 
 module.exports = router;
