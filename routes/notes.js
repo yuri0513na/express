@@ -3,8 +3,7 @@ var router = express.Router();
 
 const { MongoClient } = require('mongodb');
 
-// ★ あなたのAtlasの接続文字列に書き換えてね！
-const uri = "mongodb+srv://yurinahatsushika_db_user:kTZIU7yJjpgUQGZw@test.mhjn0yc.mongodb.net/";
+const uri = process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
 // 必要なときだけ接続する関数

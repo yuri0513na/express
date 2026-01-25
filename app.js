@@ -1,3 +1,6 @@
+require("dotenv").config();
+console.log("MONGODB_URI:", process.env.MONGODB_URI);
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -10,6 +13,7 @@ var helloRouter = require('./routes/hello');
 var notesRouter = require('./routes/notes');
 var catRouter = require('./routes/cat');
 var dogRouter = require('./routes/dog');
+var notes_from_bRouter = require('./routes/notes_from_b');
 
 // ★ここで app を作る
 var app = express();
@@ -30,6 +34,7 @@ app.use('/hello', helloRouter);
 app.use('/notes', notesRouter);
 app.use('/cat', catRouter);
 app.use('/dog', dogRouter);
+app.use('/notes_from_b',notes_from_bRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
